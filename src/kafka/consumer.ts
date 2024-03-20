@@ -37,6 +37,7 @@ export const runNewConsumer = async () => {
         }
       );
 
+      // @todo: отправлять на главный бэк инфу, что ИИ упал
       if (!response.data) {
         return;
       }

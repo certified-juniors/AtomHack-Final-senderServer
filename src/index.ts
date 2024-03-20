@@ -13,6 +13,9 @@ app.get("/", (c) => {
   return c.text("Hello Hono!");
 });
 
+// @todo: ручка, которую дергает главный бэк, когда ИИ упал
+// мы проверяем ИИ, если поднялся, продолжаем отправку
+
 const port = 3000;
 console.log(`Server is running on port ${port}`);
 

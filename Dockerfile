@@ -4,10 +4,10 @@ WORKDIR /app
 
 COPY package.json .
 
-RUN yarn 
+RUN npm install 
 
 COPY . .
 
 EXPOSE 5173
 
-CMD ["yarn", "dev", "--host"]
+CMD ["npm", "run", "dev"]

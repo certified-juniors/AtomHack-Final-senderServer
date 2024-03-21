@@ -49,7 +49,6 @@ export const runNewConsumer = async () => {
 
         console.log("Response sent to Kafka: ", response.data.responseMessage);
       } catch (e) {
-        console.log("Ошибка!");
         await axiosBackInstance.post<MessageWithError>(
           "/ml/error-message",
           {},
@@ -60,6 +59,7 @@ export const runNewConsumer = async () => {
           }
         );
         console.error(e);
+        process.exit(1);
       }
     },
   });

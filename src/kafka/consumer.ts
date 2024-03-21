@@ -1,7 +1,7 @@
-import { axiosInstance } from "../axios";
+import { axiosAIInstance, axiosBackInstance } from "../axios";
 import { kafka } from "./kafka";
 import { sendMessage } from "./producer";
-import { Message, ResponseMessage } from "./types";
+import { Message, MessageWithError, ResponseMessage } from "./types";
 
 let consumer;
 
@@ -31,7 +31,7 @@ export const runNewConsumer = async () => {
       const msg = JSON.parse(message.value.toString()) as Message;
 
       try {
-        const response = await axiosInstance.post<ResponseMessage>(
+        const response = await axiosAIInstance.post<ResponseMessage>(
           "/getResponseFromTheModel",
           {
             requestMessage: msg.payload,
@@ -49,9 +49,16 @@ export const runNewConsumer = async () => {
 
         console.log("Response sent to Kafka: ", response.data.responseMessage);
       } catch (e) {
-        await sendMessage({
-          messageId: msg.messageId,
-        });
+        console.log("Ошибка!");
+        await axiosBackInstance.post<MessageWithError>(
+          "/ml/error-message",
+          {},
+          {
+            params: {
+              messageId: msg.messageId,
+            },
+          }
+        );
         console.error(e);
       }
     },

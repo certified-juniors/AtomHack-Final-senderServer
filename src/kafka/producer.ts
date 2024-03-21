@@ -1,9 +1,9 @@
 import { kafka } from "./kafka";
-import { Message, MessageWithError } from "./types";
+import { Message } from "./types";
 
 const producer = kafka.producer();
 
-export const sendMessage = async (message: Message | MessageWithError) => {
+export const sendMessage = async (message: Message) => {
   if (!process.env.AI_KAFKA_PRODUCER_TOPIC) {
     throw new Error("AI_KAFKA_PRODUCER_TOPIC is not defined");
   }

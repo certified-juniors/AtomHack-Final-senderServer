@@ -30,23 +30,30 @@ export const runNewConsumer = async () => {
 
       const msg = JSON.parse(message.value.toString()) as Message;
 
-      const response = await axiosInstance.post<ResponseMessage>(
-        "/getResponseFromTheModel",
-        {
-          requestMessage: msg.payload,
+      try {
+        const response = await axiosInstance.post<ResponseMessage>(
+          "/getResponseFromTheModel",
+          {
+            requestMessage: msg.payload,
+          }
+        );
+
+        if (!response.data) {
+          throw new Error("Response from AI service is empty");
         }
-      );
 
-      // @todo: отправлять на главный бэк инфу, что ИИ упал
-      if (!response.data) {
-        return;
+        await sendMessage({
+          messageId: msg.messageId,
+          payload: response.data.responseMessage,
+        });
+
+        console.log("Response sent to Kafka: ", response.data.responseMessage);
+      } catch (e) {
+        await sendMessage({
+          messageId: msg.messageId,
+        });
+        console.error(e);
       }
-
-      // отправляем ответ на главный сервер
-      await sendMessage({
-        messageId: msg.messageId,
-        payload: response.data.responseMessage,
-      });
     },
   });
 };

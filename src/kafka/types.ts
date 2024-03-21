@@ -7,3 +7,7 @@ export type ResponseMessage = {
   responseMessage: string;
   responseTime: string;
 };
+
+export type MessageWithError = {
+  messageId: number;
+};
